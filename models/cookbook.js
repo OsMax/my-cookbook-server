@@ -3,23 +3,25 @@ const Joi = require("joi");
 
 const MongooseError = require("../helpers/MongoosError");
 
-// const waterSchema = new Schema(
-//   {
-//     date: { type: Date },
-//     drinks: [
-//       {
-//         ml: { type: Number },
-//         time: { type: String },
-//       },
-//     ],
-//     owner: {
-//       type: Schema.Types.ObjectId,
-//       ref: "user",
-//       required: true,
-//     },
-//   },
-//   { versionKey: false }
-// );
+const recipeSchema = new Schema(
+  {
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
+    },
+    date: { type: Date },
+    name: { type: String },
+    imageUrl: {
+      type: String,
+      default: "",
+    },
+    ingredients: [{ type: String }],
+    cooking: { type: String },
+    privStatus: { type: Boolean },
+  },
+  { versionKey: false }
+);
 
 // const dateSchema = Joi.object({
 //   date: Joi.date().required(),
@@ -48,15 +50,15 @@ const MongooseError = require("../helpers/MongoosError");
 //   "any.required": "missing required {#key} field",
 // });
 
-// const schemas = {
-//   dateSchema,
-//   drinkSchema,
-//   monthSchema,
-//   normSchema,
-// };
+const schemas = {
+  //   dateSchema,
+  //   drinkSchema,
+  //   monthSchema,
+  //   normSchema,
+};
 
-// waterSchema.post("save", MongooseError);
+recipeSchema.post("save", MongooseError);
 
-// const Water = model("waterDays", waterSchema);
+const Recipe = model("recipe", recipeSchema);
 
-// module.exports = { Water, schemas };
+module.exports = { Recipe, schemas };
