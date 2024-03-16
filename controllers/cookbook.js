@@ -1,7 +1,24 @@
-const { Water } = require("../models/water");
+const { Recipe } = require("../models/water");
 const { User } = require("../models/user");
 
 const { HttpError, ctrlWrapper, calcPercent } = require("../helpers");
+
+// ADD RECIPE
+// ========================================================================================
+const addRecipe = async (req, res) => {
+  const { _id } = req.user;
+  const { date, name, imageURL, ingredients, cooking, privStatus } = req.body;
+  const result = await Recipe.create({
+    owner: _id,
+    date,
+    name,
+    imageURL,
+    ingredients,
+    cooking,
+    privStatus,
+  });
+  res.status(201).json(result);
+};
 
 // // GET DAY
 // // ========================================================================================
@@ -183,11 +200,12 @@ const { HttpError, ctrlWrapper, calcPercent } = require("../helpers");
 //   res.status(200).json(result);
 // };
 
-// module.exports = {
-//   getDay: ctrlWrapper(getDay),
-//   addDrink: ctrlWrapper(addDrink),
-//   getMonth: ctrlWrapper(getMonth),
-//   editUserNorm: ctrlWrapper(editUserNorm),
-//   editDrink: ctrlWrapper(editDrink),
-//   deleteDrink: ctrlWrapper(deleteDrink),
-// };
+module.exports = {
+  addRecipe: ctrlWrapper(addRecipe),
+  //   getDay: ctrlWrapper(getDay),
+  //   addDrink: ctrlWrapper(addDrink),
+  //   getMonth: ctrlWrapper(getMonth),
+  //   editUserNorm: ctrlWrapper(editUserNorm),
+  //   editDrink: ctrlWrapper(editDrink),
+  //   deleteDrink: ctrlWrapper(deleteDrink),
+};
