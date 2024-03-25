@@ -1,53 +1,24 @@
 const express = require("express");
-// const isValidToken = require("../../middlewares/isValidToken");
-// const { isValidId } = require("../../middlewares/isValidId");
+const isValidToken = require("../../middlewares/isValidToken");
+const { isValidId } = require("../../middlewares/isValidId");
 // const { validateBody } = require("../../middlewares/validateBody");
 
 // const { schemas } = require("../../models/water");
 
-// const {
-//   getDay,
-//   addDrink,
-//   getMonth,
-//   editUserNorm,
-//   editDrink,
-//   deleteDrink,
-// } = require("../../controllers/water");
+const {
+  addRecipe,
+  editRecipe,
+  deleteRecipe,
+} = require("../../controllers/cookbook");
 
 const router = express.Router();
 
 // router.post("/", isValidToken, validateBody(schemas.dateSchema), getDay);
 
-// router.post(
-//   "/drinks/:dayId",
-//   isValidToken,
-//   isValidId,
-//   validateBody(schemas.drinkSchema),
-//   addDrink
-// );
+router.post("/recipe", isValidToken, addRecipe);
 
-// router.patch(
-//   "/drinks/:id",
-//   isValidToken,
-//   isValidId,
-//   validateBody(schemas.drinkSchema),
-//   editDrink
-// );
+router.patch("/recipe/:recipeId", isValidToken, isValidId, editRecipe);
 
-// router.delete("/drinks/:id", isValidToken, isValidId, deleteDrink);
-
-// router.post(
-//   "/month",
-//   isValidToken,
-//   validateBody(schemas.monthSchema),
-//   getMonth
-// );
-
-// router.patch(
-//   "/norm",
-//   isValidToken,
-//   validateBody(schemas.normSchema),
-//   editUserNorm
-// );
+router.delete("/recipe/:recipeId", isValidToken, isValidId, deleteRecipe);
 
 module.exports = router;
