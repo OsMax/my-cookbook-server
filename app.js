@@ -19,7 +19,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
-app.use("/api/cookbooks", cookRouter);
+app.use("/api/recipes", cookRouter);
 app.use("/api/users", userRouter);
 
 // app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
