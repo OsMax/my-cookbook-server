@@ -11,14 +11,14 @@ const recipeSchema = new Schema(
       required: true,
     },
     date: { type: Date },
-    name: { type: String },
+    name: { type: String, required: [true, "The recipe name is ampty"] },
     imageUrl: {
       type: String,
       default: "",
     },
     ingredients: [{ type: String }],
-    cooking: { type: String },
-    privStatus: { type: Boolean },
+    cooking: { type: String, default: "" },
+    privStatus: { type: Boolean, default: false },
   },
   { versionKey: false }
 );
@@ -51,7 +51,7 @@ const recipeSchema = new Schema(
 // });
 
 const schemas = {
-  //   dateSchema,
+  // recipeSchema,
   //   drinkSchema,
   //   monthSchema,
   //   normSchema,
