@@ -2,7 +2,7 @@ const HttpError = require("./HttpError");
 const ctrlWrapper = require("./ctrlWrapper");
 const emailSend = require("./emailSend");
 const { emailLetter, passwordLetter } = require("./emailLetter");
-const calcPercent = require("./calcPercent");
+// const calcPercent = require("./calcPercent");
 
 module.exports = {
   HttpError,
@@ -10,5 +10,5 @@ module.exports = {
   emailSend,
   emailLetter,
   passwordLetter,
-  calcPercent,
+  // calcPercent,
 };
