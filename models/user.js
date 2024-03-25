@@ -3,7 +3,7 @@ const Joi = require("joi");
 
 const MongooseError = require("../helpers/MongoosError");
 
-const GENDERS = ["woman", "man"];
+// const GENDERS = ["woman", "man"];
 
 const EMAILREGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
@@ -23,31 +23,14 @@ const userSchema = new Schema(
       type: String,
       default: "",
     },
-    gender: {
-      type: String,
-      enum: GENDERS,
-      default: "woman",
-    },
-    norm: {
-      type: Number,
-      default: 2000,
-    },
     token: String,
     avatarURL: {
       type: String,
       default: "",
     },
-    verify: {
-      type: Boolean,
-      default: false,
-    },
     verificationToken: {
       type: String,
-      required: [true, "Verify token is required"],
-    },
-    startDay: {
-      type: Date,
-      default: null,
+      default: "",
     },
   },
   { versionKey: false, timestamps: true }
@@ -80,7 +63,6 @@ const editUserInfo = Joi.object({
     "string.empty": "The email must not be empty.",
     "string.pattern.base": "The email must be in format test@gmail.com.",
   }),
-  gender: Joi.string().valid(...GENDERS),
   password: Joi.string().min(8).max(64),
   newPassword: Joi.string().min(8).max(64),
 }).messages({
