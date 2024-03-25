@@ -1,7 +1,7 @@
-const { Recipe } = require("../models/water");
-const { User } = require("../models/user");
+const { Recipe } = require("../models/cookbook");
+// const { User } = require("../models/user");
 
-const { HttpError, ctrlWrapper, calcPercent } = require("../helpers");
+const { HttpError, ctrlWrapper } = require("../helpers");
 
 // ADD RECIPE
 // ========================================================================================
@@ -18,6 +18,18 @@ const addRecipe = async (req, res) => {
     privStatus,
   });
   res.status(201).json(result);
+};
+const editRecipe = async (req, res) => {
+  if (Object.keys(req.body).length === 0) {
+    throw HttpError(400, "missing fields");
+  }
+  const { id } = req.params;
+  const result = await Recipe.findByIdAndUpdate(id, { ...req.body });
+
+  if (!result) {
+    throw HttpError(404, "The drink not found");
+  }
+  res.json(result);
 };
 
 // // GET DAY
