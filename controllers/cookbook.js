@@ -27,7 +27,13 @@ const editRecipe = async (req, res) => {
     throw HttpError(400, "missing fields");
   }
   const { recipeId } = req.params;
-  const result = await Recipe.findByIdAndUpdate(recipeId, { ...req.body });
+  const result = await Recipe.findByIdAndUpdate(
+    recipeId,
+    { ...req.body },
+    {
+      new: true,
+    }
+  );
 
   if (!result) {
     throw HttpError(404, "The recipe not found");
