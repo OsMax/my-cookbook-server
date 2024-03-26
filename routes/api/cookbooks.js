@@ -3,7 +3,7 @@ const isValidToken = require("../../middlewares/isValidToken");
 const { isValidId } = require("../../middlewares/isValidId");
 // const { validateBody } = require("../../middlewares/validateBody");
 
-// const { schemas } = require("../../models/water");
+const { schemas } = require("../../models/cookbook");
 
 const {
   addRecipe,
@@ -12,6 +12,7 @@ const {
   getMyRecipes,
   getPublicRecipes,
 } = require("../../controllers/cookbook");
+const { validateBody } = require("../../middlewares/validateBody");
 
 const router = express.Router();
 
@@ -19,7 +20,13 @@ const router = express.Router();
 
 router.post("/", isValidToken, addRecipe);
 
-router.patch("/:recipeId", isValidToken, isValidId, editRecipe);
+router.patch(
+  "/:recipeId",
+  isValidToken,
+  isValidId,
+  validateBody(schemas.editRecipeSchema),
+  editRecipe
+);
 
 router.delete("/:recipeId", isValidToken, isValidId, deleteRecipe);
 
