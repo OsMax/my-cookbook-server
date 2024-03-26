@@ -23,38 +23,18 @@ const recipeSchema = new Schema(
   { versionKey: false }
 );
 
-// const dateSchema = Joi.object({
-//   date: Joi.date().required(),
-// }).messages({
-//   "any.required": "missing required {#key} field",
-// });
-
-// const drinkSchema = Joi.object({
-//   ml: Joi.number().required(),
-//   time: Joi.string().required(),
-// }).messages({
-//   "any.required": "missing required {#key} field",
-// });
-
-// const monthSchema = Joi.object({
-//   year: Joi.number().required(),
-//   month: Joi.number().required(),
-// }).messages({
-//   "any.required": "missing required {#key} field",
-// });
-
-// const normSchema = Joi.object({
-//   date: Joi.date().required(),
-//   norm: Joi.number().required(),
-// }).messages({
-//   "any.required": "missing required {#key} field",
-// });
+const editRecipeSchema = Joi.object({
+  name: Joi.string(),
+  imageUrl: Joi.string(),
+  ingredients: Joi.array().items(Joi.string()),
+  cooking: Joi.string(),
+  privStatus: Joi.boolean(),
+}).messages({
+  "any.required": "missing required {#key} field",
+});
 
 const schemas = {
-  // recipeSchema,
-  //   drinkSchema,
-  //   monthSchema,
-  //   normSchema,
+  editRecipeSchema,
 };
 
 recipeSchema.post("save", MongooseError);
