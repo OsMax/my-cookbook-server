@@ -48,10 +48,20 @@ const deleteRecipe = async (req, res) => {
 
 // GET MY RECIPES
 // ========================================================================================
-const getMyRecipe = async (req, res) => {
+const getMyRecipes = async (req, res) => {
   const { _id } = req.user;
   const { page = 0, items = 0 } = req.query;
   const result = await Recipe.find({ owner: _id })
+    .skip((page - 1) * items)
+    .limit(items);
+  res.status(201).json(result);
+};
+
+// GET PUBLIC RECIPES
+// ========================================================================================
+const getPublicRecipes = async (req, res) => {
+  const { page, items } = req.query;
+  const result = await Recipe.find({ privStatus: false })
     .skip((page - 1) * items)
     .limit(items);
   res.status(201).json(result);
@@ -61,6 +71,6 @@ module.exports = {
   addRecipe: ctrlWrapper(addRecipe),
   editRecipe: ctrlWrapper(editRecipe),
   deleteRecipe: ctrlWrapper(deleteRecipe),
-  getMyRecipe: ctrlWrapper(getMyRecipe),
-  getPublicRecipe: ctrlWrapper(getPublicRecipe),
+  getMyRecipes: ctrlWrapper(getMyRecipes),
+  getPublicRecipes: ctrlWrapper(getPublicRecipes),
 };
