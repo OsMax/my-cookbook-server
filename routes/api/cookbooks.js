@@ -9,16 +9,22 @@ const {
   addRecipe,
   editRecipe,
   deleteRecipe,
+  getMyRecipes,
+  getPublicRecipes,
 } = require("../../controllers/cookbook");
 
 const router = express.Router();
 
 // router.post("/", isValidToken, validateBody(schemas.dateSchema), getDay);
 
-router.post("/recipe", isValidToken, addRecipe);
+router.post("/", isValidToken, addRecipe);
 
-router.patch("/recipe/:recipeId", isValidToken, isValidId, editRecipe);
+router.patch("/:recipeId", isValidToken, isValidId, editRecipe);
 
-router.delete("/recipe/:recipeId", isValidToken, isValidId, deleteRecipe);
+router.delete("/:recipeId", isValidToken, isValidId, deleteRecipe);
+
+router.get("/my", isValidToken, getMyRecipes);
+
+router.get("/public", getPublicRecipes);
 
 module.exports = router;
