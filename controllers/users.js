@@ -25,6 +25,9 @@ const register = async (req, res, next) => {
 
   const hashPassword = await bcrypt.hash(password, 10);
 
+  if (!req.body.name) {
+    req.body.name = "Anonim";
+  }
   const newUser = await User.create({
     ...req.body,
     password: hashPassword,
@@ -38,6 +41,7 @@ const register = async (req, res, next) => {
     user: {
       id: newUser.id,
       email: newUser.email,
+      name: newUser.name,
     },
   });
 };
