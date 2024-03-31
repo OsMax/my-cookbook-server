@@ -40,6 +40,12 @@ const register = async (req, res, next) => {
   const token = jwt.sign({ id }, SECRET_KEY, { expiresIn: "3d" });
   await User.findByIdAndUpdate(id, { token });
 
+  const user = {
+    id: newUser.id,
+    email: newUser.email,
+    name: newUser.name,
+  };
+
   if (req.file) {
     const { path: tempUpload, originalname } = req.file;
     const fileName = originalname.split(".");
@@ -54,15 +60,19 @@ const register = async (req, res, next) => {
     await fs.unlink(newFileName);
 
     await User.findByIdAndUpdate(id, { avatarURL: avatar.url });
+    user.avatarURL = avatar.url;
   }
   res.status(201).json({
     token,
-    user: {
-      id: newUser.id,
-      email: newUser.email,
-      name: newUser.name,
-    },
+    user,
   });
+};
+
+const test = async (req, res) => {
+  if (req.file) {
+    console.log(req.file);
+  }
+  console.log(req.body);
 };
 
 // LOGIN
@@ -228,4 +238,5 @@ module.exports = {
   editUserInfo: ctrlWrapper(editUserInfo),
   restoreMail: ctrlWrapper(restoreMail),
   restorePassword: ctrlWrapper(restorePassword),
+  test,
 };

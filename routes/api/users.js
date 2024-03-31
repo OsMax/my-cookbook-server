@@ -9,6 +9,7 @@ const {
   editUserInfo,
   restorePassword,
   restoreMail,
+  test,
 } = require("../../controllers/users");
 
 const { validateBody } = require("../../middlewares/validateBody");
@@ -19,7 +20,8 @@ const { schema } = require("../../models/user");
 
 const router = express.Router();
 
-router.post("/register", upload.single("file"), register);
+router.post("/register", register);
+router.post("/test", upload.single("avatar"), test);
 
 router.post("/login", validateBody(schema.authSchema), login);
 
