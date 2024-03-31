@@ -20,6 +20,7 @@ const { SECRET_KEY } = process.env;
 
 // REGISTER
 // ================================================================================================
+
 const register = async (req, res, next) => {
   const { password, email } = req.body;
 
@@ -28,6 +29,8 @@ const register = async (req, res, next) => {
   if (!req.body.name) {
     req.body.name = "Anonim";
   }
+  console.log(req.body);
+  console.log(req.file);
   const newUser = await User.create({
     ...req.body,
     password: hashPassword,
@@ -36,6 +39,22 @@ const register = async (req, res, next) => {
   const { id } = await User.findOne({ email });
   const token = jwt.sign({ id }, SECRET_KEY, { expiresIn: "3d" });
   await User.findByIdAndUpdate(id, { token });
+
+  if (req.file) {
+    const { path: tempUpload, originalname } = req.file;
+    const fileName = originalname.split(".");
+    const newFileName = path.join("temp", `${id}` + "." + `${fileName[1]}`);
+
+    await Jimp.read(tempUpload).then((ava) =>
+      ava.resize(250, 250).write(newFileName)
+    );
+    await fs.unlink(tempUpload);
+
+    const avatar = await uploadImage(newFileName);
+    await fs.unlink(newFileName);
+
+    await User.findByIdAndUpdate(id, { avatarURL: avatar.url });
+  }
   res.status(201).json({
     token,
     user: {
