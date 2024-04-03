@@ -68,13 +68,6 @@ const register = async (req, res, next) => {
   });
 };
 
-const test = async (req, res) => {
-  if (req.file) {
-    console.log(req.file);
-  }
-  console.log(req.body);
-};
-
 // LOGIN
 // ================================================================================================
 const login = async (req, res, next) => {
@@ -238,5 +231,4 @@ module.exports = {
   editUserInfo: ctrlWrapper(editUserInfo),
   restoreMail: ctrlWrapper(restoreMail),
   restorePassword: ctrlWrapper(restorePassword),
-  test,
 };
