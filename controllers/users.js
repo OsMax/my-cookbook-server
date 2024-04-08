@@ -29,8 +29,8 @@ const register = async (req, res, next) => {
   if (!req.body.name) {
     req.body.name = "Anonim";
   }
-  console.log(req.body);
-  console.log(req.file);
+  // console.log(req.body);
+  // console.log(req.file);
   const newUser = await User.create({
     ...req.body,
     password: hashPassword,
@@ -124,6 +124,10 @@ const getCurrent = async (req, res) => {
 const changeAvatar = async (req, res) => {
   const { _id } = req.user;
 
+  // console.log(_id);
+
+  // console.log(req.file);
+
   if (!req.file) throw HttpError(400);
 
   const { path: tempUpload, originalname } = req.file;
@@ -139,6 +143,7 @@ const changeAvatar = async (req, res) => {
   await fs.unlink(newFileName);
 
   await User.findByIdAndUpdate(_id, { avatarURL: avatar.url });
+  // console.log(avatar.url);
 
   res.json({ avatarURL: avatar.url });
 };
@@ -222,6 +227,14 @@ const restorePassword = async (req, res) => {
   res.status(201).json({ user: { id: user.id, email: user.email } });
 };
 
+const test = async (req, res) => {
+  console.log("AVATAR");
+  if (req.file) {
+    console.log(req.file);
+  }
+  console.log(req.body);
+};
+
 module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
@@ -231,4 +244,5 @@ module.exports = {
   editUserInfo: ctrlWrapper(editUserInfo),
   restoreMail: ctrlWrapper(restoreMail),
   restorePassword: ctrlWrapper(restorePassword),
+  test,
 };

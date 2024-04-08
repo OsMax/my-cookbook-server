@@ -9,6 +9,7 @@ const {
   editUserInfo,
   restorePassword,
   restoreMail,
+  test,
 } = require("../../controllers/users");
 
 const { validateBody } = require("../../middlewares/validateBody");
@@ -27,7 +28,9 @@ router.post("/logout", isValidToken, logout);
 
 router.get("/current", isValidToken, getCurrent);
 
-router.patch("/avatars", isValidToken, upload.single("avatar"), changeAvatar);
+router.patch("/avatar", isValidToken, upload.single("avatar"), changeAvatar);
+
+router.patch("/test", isValidToken, upload.single("avatar"), test);
 
 router.patch(
   "/info",
