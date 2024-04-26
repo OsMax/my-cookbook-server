@@ -4,21 +4,25 @@ const { isValidId } = require("../../middlewares/isValidId");
 // const { validateBody } = require("../../middlewares/validateBody");
 
 const { schemas } = require("../../models/cookbook");
+const multer = require("multer");
+const path = require("path");
+const tempDir = path.join(__dirname, "../", "temp");
+const upload = multer({ dest: tempDir });
 
 const {
-  addRecipe,
+  addRecipeInfo,
   editRecipe,
   deleteRecipe,
   getMyRecipes,
   getPublicRecipes,
+  test,
 } = require("../../controllers/cookbook");
 const { validateBody } = require("../../middlewares/validateBody");
 
 const router = express.Router();
 
-// router.post("/", isValidToken, validateBody(schemas.dateSchema), getDay);
-
-router.post("/", isValidToken, addRecipe);
+router.post("/", isValidToken, upload.single("image"), addRecipeInfo);
+router.post("/test", isValidToken, upload.single("image"), test);
 
 router.patch(
   "/:recipeId",

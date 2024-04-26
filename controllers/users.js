@@ -124,10 +124,6 @@ const getCurrent = async (req, res) => {
 const changeAvatar = async (req, res) => {
   const { _id } = req.user;
 
-  // console.log(_id);
-
-  // console.log(req.file);
-
   if (!req.file) throw HttpError(400);
 
   const { path: tempUpload, originalname } = req.file;
@@ -143,7 +139,6 @@ const changeAvatar = async (req, res) => {
   await fs.unlink(newFileName);
 
   await User.findByIdAndUpdate(_id, { avatarURL: avatar.url });
-  // console.log(avatar.url);
 
   res.json({ avatarURL: avatar.url });
 };
