@@ -22,21 +22,25 @@ const { SECRET_KEY } = process.env;
 // ================================================================================================
 
 const register = async (req, res, next) => {
-  const { password, email } = req.body;
+  const { file } = req;
+  const info = JSON.parse(req.body.info);
+  console.log(info.email);
 
-  const hashPassword = await bcrypt.hash(password, 10);
+  const hashPassword = await bcrypt.hash(info.password, 10);
 
-  if (!req.body.name) {
-    req.body.name = "Anonim";
+  if (!info.name) {
+    info.name = "Anonim";
   }
-  // console.log(req.body);
-  // console.log(req.file);
+
   const newUser = await User.create({
-    ...req.body,
+    ...info,
     password: hashPassword,
-    avatarURL: "",
+    avatarURL:
+      "https://res.cloudinary.com/dykzy8ppw/image/upload/v1714261580/cookbook/avatarDefault.png",
   });
-  const { id } = await User.findOne({ email });
+  // console.log(newUser.id);
+  const { id } = newUser;
+
   const token = jwt.sign({ id }, SECRET_KEY, { expiresIn: "3d" });
   await User.findByIdAndUpdate(id, { token });
 
@@ -44,12 +48,17 @@ const register = async (req, res, next) => {
     id: newUser.id,
     email: newUser.email,
     name: newUser.name,
+    avatarURL: newUser.avatarURL,
   };
+  // console.log(newUser.token, user);
 
-  if (req.file) {
+  if (file) {
     const { path: tempUpload, originalname } = req.file;
     const fileName = originalname.split(".");
-    const newFileName = path.join("temp", `${id}` + "." + `${fileName[1]}`);
+    const newFileName = path.join(
+      "temp",
+      `${newUser.id}` + "." + `${fileName[1]}`
+    );
 
     await Jimp.read(tempUpload).then((ava) =>
       ava.resize(250, 250).write(newFileName)
@@ -59,9 +68,10 @@ const register = async (req, res, next) => {
     const avatar = await uploadImage(newFileName);
     await fs.unlink(newFileName);
 
-    await User.findByIdAndUpdate(id, { avatarURL: avatar.url });
+    await User.findByIdAndUpdate(newUser.id, { avatarURL: avatar.url });
     user.avatarURL = avatar.url;
   }
+
   res.status(201).json({
     token,
     user,
@@ -119,7 +129,6 @@ const getCurrent = async (req, res) => {
   });
 };
 
-// AVATAR
 // ================================================================================================
 const changeAvatar = async (req, res) => {
   const { _id } = req.user;
