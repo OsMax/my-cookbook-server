@@ -10,25 +10,39 @@ const { HttpError, ctrlWrapper } = require("../helpers");
 // ADD RECIPE
 // ========================================================================================
 const addRecipeInfo = async (req, res) => {
-  const recipeInfo = JSON.parse(req.body.recipeInfo);
-
-  if (!req.file) throw HttpError(400);
+  const owner = req.user._id;
+  const { name, ingredients, cooking, privStatus, date } = JSON.parse(
+    req.body.recipeInfo
+  );
   const { file } = req;
-  console.log(file, recipeInfo);
 
-  // const { path: tempUpload, originalname } = req.file;
-  // const fileName = originalname.split(".");
-  // const newFileName = path.join("temp", `${_id}` + "." + `${fileName[1]}`);
+  // console.log(file, name, ingredients, cooking, privStatus, date);
+  const { id } = await Recipe.create({
+    owner,
+    name,
+    ingredients,
+    cooking,
+    privStatus,
+    date,
+  });
+  console.log(id);
 
-  // await Jimp.read(tempUpload).then((ava) =>
-  //   ava.resize(250, 250).write(newFileName)
-  // );
-  // await fs.unlink(tempUpload);
+  if (file) {
+    const { path: tempUpload, originalname } = file;
+    const fileName = originalname.split(".");
+    const newFileName = path.join("temp", `${id}` + "." + `${fileName[1]}`);
 
-  // const avatar = await uploadImage(newFileName);
-  // await fs.unlink(newFileName);
+    await Jimp.read(tempUpload).then((ava) =>
+      ava.resize(420, 280).write(newFileName)
+    );
+    await fs.unlink(tempUpload);
 
-  // await Recipe.findByIdAndUpdate(_id, { avatarURL: avatar.url });
+    const image = await uploadImage(newFileName);
+    await fs.unlink(newFileName);
+
+    await Recipe.findByIdAndUpdate(id, { imageUrl: image.url });
+  }
+
   // const { date, name, imageURL, ingredients, cooking, privStatus } = req.body;
   // const result = await Recipe.create({
   //   owner: _id,
