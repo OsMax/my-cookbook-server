@@ -42,18 +42,6 @@ const addRecipeInfo = async (req, res) => {
 
     await Recipe.findByIdAndUpdate(id, { imageUrl: image.url });
   }
-
-  // const { date, name, imageURL, ingredients, cooking, privStatus } = req.body;
-  // const result = await Recipe.create({
-  //   owner: _id,
-  //   date,
-  //   name,
-  //   imageURL,
-  //   ingredients,
-  //   cooking,
-  //   privStatus,
-  // });
-  // res.status(201).json(result);
 };
 const test = async (req, res) => {
   if (!req.file) throw HttpError(400);
@@ -109,20 +97,20 @@ const deleteRecipe = async (req, res) => {
 // ========================================================================================
 const getMyRecipes = async (req, res) => {
   const { _id } = req.user;
-  const { page = 0, items = 0 } = req.query;
+  const { page = 0, count = 0 } = req.query;
   const result = await Recipe.find({ owner: _id })
-    .skip((page - 1) * items)
-    .limit(items);
+    .skip((page - 1) * count)
+    .limit(count);
   res.status(201).json(result);
 };
 
 // GET PUBLIC RECIPES
 // ========================================================================================
 const getPublicRecipes = async (req, res) => {
-  const { page, items } = req.query;
+  const { page, count } = req.query;
   const result = await Recipe.find({ privStatus: false })
-    .skip((page - 1) * items)
-    .limit(items);
+    .skip((page - 1) * count)
+    .limit(count);
   res.status(201).json(result);
 };
 
