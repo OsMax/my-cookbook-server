@@ -5,8 +5,8 @@ const {
   login,
   logout,
   getCurrent,
-  changeAvatar,
-  editUserInfo,
+  editUser,
+  // editUserInfo,
   restorePassword,
   restoreMail,
   test,
@@ -20,7 +20,7 @@ const { schema } = require("../../models/user");
 
 const router = express.Router();
 
-router.post("/register", register);
+router.post("/register", upload.single("avatar"), register);
 
 router.post("/login", validateBody(schema.authSchema), login);
 
@@ -28,16 +28,16 @@ router.post("/logout", isValidToken, logout);
 
 router.get("/current", isValidToken, getCurrent);
 
-router.patch("/avatar", isValidToken, upload.single("avatar"), changeAvatar);
+router.patch("/edit", isValidToken, upload.single("avatar"), editUser);
 
 router.patch("/test", isValidToken, upload.single("avatar"), test);
 
-router.patch(
-  "/info",
-  isValidToken,
-  validateBody(schema.editUserInfo),
-  editUserInfo
-);
+// router.patch(
+//   "/info",
+//   isValidToken,
+//   validateBody(schema.editUserInfo),
+//   editUserInfo
+// );
 
 router.post("/restore", validateBody(schema.emailSchema), restoreMail);
 
