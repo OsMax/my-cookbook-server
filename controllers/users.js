@@ -129,66 +129,56 @@ const getCurrent = async (req, res) => {
   });
 };
 
+// EDIT
 // ================================================================================================
-const changeAvatar = async (req, res) => {
-  const { _id } = req.user;
+const editUser = async (req, res) => {
+  const { id } = req.user;
+  const { file } = req;
+  const { name, email, password } = JSON.parse(req.body.info);
+  // console.log(name);
+  const editUser = {};
 
-  if (!req.file) throw HttpError(400);
-
-  const { path: tempUpload, originalname } = req.file;
-  const fileName = originalname.split(".");
-  const newFileName = path.join("temp", `${_id}` + "." + `${fileName[1]}`);
-
-  await Jimp.read(tempUpload).then((ava) =>
-    ava.resize(250, 250).write(newFileName)
-  );
-  await fs.unlink(tempUpload);
-
-  const avatar = await uploadImage(newFileName);
-  await fs.unlink(newFileName);
-
-  await User.findByIdAndUpdate(_id, { avatarURL: avatar.url });
-
-  res.json({ avatarURL: avatar.url });
-};
-
-// EDIT_INFORMATION
-// ==================================================================================================
-const editUserInfo = async (req, res) => {
-  const keys = Object.keys(req.body);
-  if (keys.length === 0) {
-    throw HttpError(400);
+  if (password) {
+    const hashPassword = await bcrypt.hash(password, 10);
+    editUser.password = hashPassword;
   }
-  const newUserInfo = req.body;
-  if (req.body.newPassword) {
-    if (!req.body.password) {
-      throw HttpError(401, "Current password is empty");
-    }
-    if (!(await bcrypt.compare(req.body.password, req.user.password))) {
-      throw HttpError(401, "Somthing wrong!");
-    }
-    const hashPassword = await bcrypt.hash(req.body.newPassword, 10);
-    newUserInfo.password = hashPassword;
-  } else {
-    delete newUserInfo.password;
+  if (name) {
+    editUser.name = name;
   }
-  const { _id } = req.user;
+  if (email) {
+    editUser.email = email;
+  }
+  if (file) {
+    const { path: tempUpload, originalname } = req.file;
+    const fileName = originalname.split(".");
+    const newFileName = path.join("temp", `${id}` + "." + `${fileName[1]}`);
+
+    await Jimp.read(tempUpload).then((ava) =>
+      ava.resize(250, 250).write(newFileName)
+    );
+    await fs.unlink(tempUpload);
+
+    const avatar = await uploadImage(newFileName);
+    await fs.unlink(newFileName);
+
+    //  await User.findByIdAndUpdate(id, { avatarURL: avatar.url });
+    editUser.avatarURL = avatar.url;
+  }
+  // console.log(editUser);
   const user = await User.findByIdAndUpdate(
-    _id,
-    { ...newUserInfo },
+    id,
+    { ...editUser },
     {
       new: true,
     }
   );
-  res.status(200).json({
+
+  res.status(203).json({
     user: {
       _id: user.id,
-      email: user.email,
       name: user.name,
-      gender: user.gender,
-      norm: user.norm,
+      email: user.email,
       avatarURL: user.avatarURL,
-      startDay: user.startDay,
     },
   });
 };
@@ -244,8 +234,8 @@ module.exports = {
   login: ctrlWrapper(login),
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),
-  changeAvatar: ctrlWrapper(changeAvatar),
-  editUserInfo: ctrlWrapper(editUserInfo),
+  editUser: ctrlWrapper(editUser),
+  // editUserInfo: ctrlWrapper(editUserInfo),
   restoreMail: ctrlWrapper(restoreMail),
   restorePassword: ctrlWrapper(restorePassword),
   test,
