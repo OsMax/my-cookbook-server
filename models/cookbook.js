@@ -10,7 +10,7 @@ const recipeSchema = new Schema(
       ref: "user",
       required: true,
     },
-    date: { type: Date },
+    date: { type: Date, required: true },
     name: { type: String, required: [true, "The recipe name is ampty"] },
     imageUrl: {
       type: String,
