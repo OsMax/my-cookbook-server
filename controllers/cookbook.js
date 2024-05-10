@@ -25,7 +25,6 @@ const addRecipeInfo = async (req, res) => {
     privStatus,
     date,
   });
-  console.log(id);
 
   if (file) {
     const { path: tempUpload, originalname } = file;
@@ -43,22 +42,13 @@ const addRecipeInfo = async (req, res) => {
     await Recipe.findByIdAndUpdate(id, { imageUrl: image.url });
   }
 };
+
+// FOR TEST
 const test = async (req, res) => {
   if (!req.file) throw HttpError(400);
   const { file } = req;
   const recipeInfo = JSON.parse(req.body.recipeInfo);
   console.log(file, recipeInfo);
-  // const { date, name, imageURL, ingredients, cooking, privStatus } = req.body;
-  // const result = await Recipe.create({
-  //   owner: _id,
-  //   date,
-  //   name,
-  //   imageURL,
-  //   ingredients,
-  //   cooking,
-  //   privStatus,
-  // });
-  // res.status(201).json(result);
 };
 
 // EDIT RECIPE
