@@ -25,12 +25,10 @@ const recipeSchema = new Schema(
 
 const editRecipeSchema = Joi.object({
   name: Joi.string(),
-  imageUrl: Joi.string(),
+  imageUrl: Joi.binary(),
   ingredients: Joi.array().items(Joi.string()),
   cooking: Joi.string(),
   privStatus: Joi.boolean(),
-}).messages({
-  "any.required": "missing required {#key} field",
 });
 
 const schemas = {
