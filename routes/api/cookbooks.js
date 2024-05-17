@@ -4,10 +4,12 @@ const { isValidId } = require("../../middlewares/isValidId");
 // const { validateBody } = require("../../middlewares/validateBody");
 
 const { schemas } = require("../../models/cookbook");
-const multer = require("multer");
-const path = require("path");
-const tempDir = path.join(__dirname, "../", "temp");
-const upload = multer({ dest: tempDir });
+const { validateBody } = require("../../middlewares/validateBody");
+// const multer = require("multer");
+// const path = require("path");
+// const tempDir = path.join(__dirname, "../", "temp");
+// const upload = multer({ dest: tempDir });
+const upload = require("../../middlewares/upload");
 
 const {
   addRecipeInfo,
@@ -15,20 +17,27 @@ const {
   deleteRecipe,
   getMyRecipes,
   getPublicRecipes,
-  test,
+  // test,
 } = require("../../controllers/cookbook");
-const { validateBody } = require("../../middlewares/validateBody");
 
 const router = express.Router();
 
 router.post("/", isValidToken, upload.single("image"), addRecipeInfo);
-router.post("/test", isValidToken, upload.single("image"), test);
+// router.post("/test", isValidToken, upload.single("image"), test);
+
+router.patch("/test", upload.single("image"), (req, res) => {
+  console.log("its TEST");
+  const { file } = req;
+  console.log(file);
+  console.log(req.body);
+});
 
 router.patch(
   "/:recipeId",
   isValidToken,
+  upload.single("image"),
   isValidId,
-  validateBody(schemas.editRecipeSchema),
+  // validateBody(schemas.editRecipeSchema),
   editRecipe
 );
 
