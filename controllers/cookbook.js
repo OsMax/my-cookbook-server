@@ -54,21 +54,34 @@ const test = async (req, res) => {
 // EDIT RECIPE
 // ========================================================================================
 const editRecipe = async (req, res) => {
-  if (Object.keys(req.body).length === 0) {
-    throw HttpError(400, "missing fields");
+  const id = req.params.recipeId;
+
+  const { file } = req;
+  if (file) {
+    console.log("file");
+    const { path: tempUpload, originalname } = file;
+    const fileName = originalname.split(".");
+    const newFileName = path.join("temp", `${id}` + "." + `${fileName[1]}`);
+
+    await Jimp.read(tempUpload).then((ava) =>
+      ava.resize(420, 280).write(newFileName)
+    );
+    await fs.unlink(tempUpload);
+
+    const image = await uploadImage(newFileName);
+    await fs.unlink(newFileName);
+
+    await Recipe.findByIdAndUpdate({ id: id }, { imageUrl: image.url });
   }
-  const { recipeId } = req.params;
+  const recipeInfo = JSON.parse(req.body.recipeInfo);
+  console.log(recipeInfo);
   const result = await Recipe.findByIdAndUpdate(
-    recipeId,
-    { ...req.body },
+    id,
+    { ...recipeInfo },
     {
       new: true,
     }
   );
-
-  if (!result) {
-    throw HttpError(404, "The recipe not found");
-  }
   res.json(result);
 };
 
@@ -80,7 +93,7 @@ const deleteRecipe = async (req, res) => {
   if (!result) {
     throw HttpError(404, "The recipe not found");
   }
-  res.json(result);
+  res.json({ result });
 };
 
 // GET MY RECIPES
