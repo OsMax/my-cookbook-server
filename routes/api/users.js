@@ -32,13 +32,6 @@ router.patch("/edit", isValidToken, upload.single("avatar"), editUser);
 
 router.patch("/test", isValidToken, upload.single("avatar"), test);
 
-// router.patch(
-//   "/info",
-//   isValidToken,
-//   validateBody(schema.editUserInfo),
-//   editUserInfo
-// );
-
 router.post("/restore", validateBody(schema.emailSchema), restoreMail);
 
 router.patch(
