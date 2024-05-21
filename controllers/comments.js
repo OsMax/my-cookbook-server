@@ -20,3 +20,20 @@ const addComment = async (req, res) => {
   });
   res.json(result);
 };
+
+// EDIT СOMMENT
+// ========================================================================================
+const aeditComment = async (req, res) => {
+  const owner = req.user._id;
+  const { commentId } = req.params;
+  const { text } = req.body;
+
+  // console.log(file, name, ingredients, cooking, privStatus, date);
+  const result = await Comment.findByIdAndUpdate(
+    { id: commentId },
+    {
+      text,
+    }
+  );
+  res.json(result);
+};
