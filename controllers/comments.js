@@ -41,3 +41,14 @@ const editComment = async (req, res) => {
   );
   res.json(result);
 };
+
+// Delete СOMMENT
+// ========================================================================================
+const deleteComment = async (req, res) => {
+  const owner = req.user._id;
+  const { commentId } = req.params;
+
+  // console.log(file, name, ingredients, cooking, privStatus, date);
+  await Comment.findOneAndDelete({ id: commentId, owner });
+  res.status(200).json({ message: "comment has been delete" });
+};
