@@ -52,3 +52,9 @@ const deleteComment = async (req, res) => {
   await Comment.findOneAndDelete({ id: commentId, owner });
   res.status(200).json({ message: "comment has been delete" });
 };
+
+module.exports = {
+  addComment: ctrlWrapper(addComment),
+  editComment: ctrlWrapper(editComment),
+  deleteComment: ctrlWrapper(deleteComment),
+};
