@@ -9,6 +9,7 @@ require("dotenv").config();
 
 const cookRouter = require("./routes/api/cookbooks");
 const userRouter = require("./routes/api/users");
+const commentRouter = require("./routes/api/comments");
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(express.static("public"));
 
 app.use("/api/recipes", cookRouter);
 app.use("/api/users", userRouter);
+app.use("/api/comments", commentRouter);
 
 // app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
