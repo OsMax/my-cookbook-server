@@ -1,25 +1,28 @@
 const { Comment } = require("../models/comments");
-const { Recipe } = require("../models/cookbook");
-const Jimp = require("jimp");
-const fs = require("fs/promises");
+const { User } = require("../models/user");
 
 const { HttpError, ctrlWrapper } = require("../helpers");
 
 // ADD СOMMENT
 // ========================================================================================
 const addComment = async (req, res) => {
-  const owner = req.user._id;
+  // console.log("!!!!!");
+  const owner = req.user.id;
   const { recipeId } = req.params;
-  const { date, text } = req.body;
+  const { date, commentText } = req.body;
+  console.log(commentText);
 
-  // console.log(file, name, ingredients, cooking, privStatus, date);
-  await Comment.create({
+  const newComment = await Comment.create({
     recipeId,
     owner,
     date,
-    text,
+    commentText,
   });
-  res.status(200).json({ message: "comment has been add" });
+  const { name, avatarURL } = await User.findById(owner);
+
+  res
+    .status(200)
+    .json({ comment: { ...newComment._doc, ownerName: name, avatarURL } });
 };
 
 // EDIT СOMMENT
