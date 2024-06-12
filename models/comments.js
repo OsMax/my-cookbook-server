@@ -3,15 +3,23 @@ const { Schema, model } = require("mongoose");
 
 const MongooseError = require("../helpers/MongoosError");
 
-const commentSchema = new Schema({
-  recipeId: {
-    type: Schema.Types.ObjectId,
-    ref: "recipe",
-    required: true,
+const commentSchema = new Schema(
+  {
+    recipeId: {
+      type: Schema.Types.ObjectId,
+      ref: "recipe",
+      required: true,
+    },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
+    },
+    commentText: { type: String, required: true },
+    date: { type: Date, required: true },
   },
-  text: { type: String, required: true },
-  date: { type: Date, required: true },
-});
+  { versionKey: false }
+);
 
 commentSchema.post("save", MongooseError);
 
