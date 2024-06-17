@@ -8,8 +8,18 @@ const { HttpError, ctrlWrapper } = require("../helpers");
 const getComments = async (req, res) => {
   const { recipeId } = req.params;
   const comments = await Comment.find({ recipeId });
-  console.log(comments);
-  res.status(200).json({ comments });
+  const users = await User.find({});
+  const result = comments.map((comment) => {
+    const { owner } = comment;
+    console.log(owner);
+    // const user = users.find((one) => user.id === owner);
+    const { name, avatarURL } = users.find(
+      (user) => user._id.toString() === owner.toString()
+    );
+    return { ...comment._doc, ownerName: name, avatarURL };
+  });
+  console.log("result", result);
+  res.status(200).json({ comments: result });
 };
 
 // ADD СOMMENT
