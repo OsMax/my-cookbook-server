@@ -3,6 +3,15 @@ const { User } = require("../models/user");
 
 const { HttpError, ctrlWrapper } = require("../helpers");
 
+// GET СOMMENT
+// ========================================================================================
+const getComments = async (req, res) => {
+  const { recipeId } = req.params;
+  const comments = await Comment.find({ recipeId });
+  console.log(comments);
+  res.status(200).json({ comments });
+};
+
 // ADD СOMMENT
 // ========================================================================================
 const addComment = async (req, res) => {
@@ -10,7 +19,6 @@ const addComment = async (req, res) => {
   const owner = req.user.id;
   const { recipeId } = req.params;
   const { date, commentText } = req.body;
-  console.log(commentText);
 
   const newComment = await Comment.create({
     recipeId,
@@ -57,6 +65,7 @@ const deleteComment = async (req, res) => {
 };
 
 module.exports = {
+  getComments: ctrlWrapper(getComments),
   addComment: ctrlWrapper(addComment),
   editComment: ctrlWrapper(editComment),
   deleteComment: ctrlWrapper(deleteComment),

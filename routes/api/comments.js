@@ -6,12 +6,15 @@ const { isValidId } = require("../../middlewares/isValidId");
 // const { validateBody } = require("../../middlewares/validateBody");
 
 const {
+  getComments,
   addComment,
   editComment,
   deleteComment,
 } = require("../../controllers/comments");
 
 const router = express.Router();
+
+router.get("/:recipeId", getComments);
 
 router.post("/:recipeId", isValidToken, isValidId, addComment);
 
