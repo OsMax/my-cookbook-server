@@ -1,7 +1,7 @@
 const { Comment } = require("../models/comments");
 const { User } = require("../models/user");
 
-const { HttpError, ctrlWrapper } = require("../helpers");
+const { HttpError, ctrlWrapper, getUnique } = require("../helpers");
 
 // GET СOMMENT
 // ========================================================================================
@@ -11,15 +11,32 @@ const getComments = async (req, res) => {
   const users = await User.find({});
   const result = comments.map((comment) => {
     const { owner } = comment;
-    console.log(owner);
-    // const user = users.find((one) => user.id === owner);
     const { name, avatarURL } = users.find(
       (user) => user._id.toString() === owner.toString()
     );
     return { ...comment._doc, ownerName: name, avatarURL };
   });
-  console.log("result", result);
   res.status(200).json({ comments: result });
+};
+
+// CHECK СOMMENT
+// ========================================================================================
+const checkComments = async (req, res) => {
+  const { recipeId } = req.params;
+  const userComments = req.body;
+  const users = await User.find({});
+  const serverComments = await Comment.find({ recipeId });
+
+  const { forAdd, forDel } = getUnique(serverComments, userComments);
+
+  const result = forAdd.map((comment) => {
+    const { owner } = comment;
+    const { name, avatarURL } = users.find(
+      (user) => user._id.toString() === owner.toString()
+    );
+    return { ...comment._doc, ownerName: name, avatarURL };
+  });
+  res.status(200).json({ forAdd: result, forDel });
 };
 
 // ADD СOMMENT
@@ -79,4 +96,5 @@ module.exports = {
   addComment: ctrlWrapper(addComment),
   editComment: ctrlWrapper(editComment),
   deleteComment: ctrlWrapper(deleteComment),
+  checkComments: ctrlWrapper(checkComments),
 };
