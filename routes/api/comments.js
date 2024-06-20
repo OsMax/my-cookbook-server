@@ -10,11 +10,13 @@ const {
   addComment,
   editComment,
   deleteComment,
+  checkComments,
 } = require("../../controllers/comments");
 
 const router = express.Router();
 
 router.get("/:recipeId", getComments);
+router.post("/check/:recipeId", checkComments);
 
 router.post("/:recipeId", isValidToken, isValidId, addComment);
 
